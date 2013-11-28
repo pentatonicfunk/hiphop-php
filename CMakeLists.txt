@@ -1,5 +1,5 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4 FATAL_ERROR)
-PROJECT(hphp C CXX)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5 FATAL_ERROR)
+PROJECT(hphp C CXX ASM)
 
 IF("$ENV{HPHP_HOME}" STREQUAL "")
 	message(FATAL_ERROR "You should set the HPHP_HOME environmental")
@@ -20,10 +20,15 @@ SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/HPHPFunctions.cmake")
 include(CheckFunctionExists)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/hphp)
 
 IF(CMAKE_SIZEOF_VOID_P EQUAL 4)
-	message(STATUS "------------")
-	message(STATUS "32-bit support is experimental, things may be broken")
-	message(STATUS "------------")
+	message(FATAL_ERROR "32-bit support is currently unsupported, check back with a later version of HipHop")
 ENDIF()
+
+if ("$ENV{USE_HHVM}" STREQUAL "1")
+	message("Building for HHVM")
+endif()
+if ("$ENV{USE_HPHPC}" STREQUAL "1")
+	message(FATAL_ERROR "Building HPHPc is no longer supported")
+endif()
